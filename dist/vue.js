@@ -4,6 +4,8 @@
  * Released under the MIT License.
  */
 (function (global, factory) {
+  /* 在模块文件内部，可以直接用exports，module.import时会自动对应成module.exports */
+  /* 是模块文件并在node环境下运行？ 导出factory()返回值： */
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global.Vue = factory());
