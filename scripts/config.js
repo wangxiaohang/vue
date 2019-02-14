@@ -34,6 +34,12 @@ const resolve = p => {
   }
 }
 
+/*
+ * 关于format参数：
+ * cjs: 对应vue.**.common.js，（common:通用）在低版本构建工具中用，比如：模块导出用的是node命令：module.exports
+ * es: 对应vue.**.esm.js，（es module，es6)在高版本构建工具中用，比如：模块导出用的是es6语法：export default **
+ * umd: 用于script标签引用
+ */
 const builds = {
   // Runtime only (CommonJS). Used by bundlers e.g. Webpack & Browserify
   'web-runtime-cjs': {
