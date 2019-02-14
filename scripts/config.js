@@ -27,10 +27,10 @@ const weexFactoryPlugin = {
 const aliases = require('./alias')
 const resolve = p => {
   const base = p.split('/')[0]
-  if (aliases[base]) {
-    return path.resolve(aliases[base], p.slice(base.length + 1))
-  } else {
-    return path.resolve(__dirname, '../', p)
+  if (aliases[base]) { // 有别名
+    return path.resolve(aliases[base], p.slice(base.length + 1)) // path:node中处理路径的工具；path.resolve(路径片段)：将路径片段生成绝对路径
+  } else { // 无别名
+    return path.resolve(__dirname, '../', p) // __dirname:当前文件目录名
   }
 }
 
