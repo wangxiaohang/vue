@@ -168,7 +168,7 @@ const builds = {
   }
 }
 
-function genConfig (name) {
+function genConfig (name) { // name循环遍历中的builds的键名
   const opts = builds[name]
   const config = {
     input: opts.entry,
