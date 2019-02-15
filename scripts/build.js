@@ -12,6 +12,7 @@ if (!fs.existsSync('dist')) {
 let builds = require('./config').getAllBuilds()
 
 /* 对配置项builds做过滤 start */
+/* 过滤掉不需要的 ？？？ */
 if (process.argv[2]) { // process Node.js程序中的全局变量
   const filters = process.argv[2].split(',')
   builds = builds.filter(b => {
@@ -25,7 +26,7 @@ if (process.argv[2]) { // process Node.js程序中的全局变量
 }
 /* 对配置项builds做过滤 end */
 
-/* 基于配置项的构建过程 */
+/* 基于配置项的构建过程 编译 */
 build(builds)
 
 function build (builds) {
