@@ -174,6 +174,7 @@ const builds = {
   }
 }
 
+// 用于将builds中的配置，对应成rollup打包时对应的配置结构
 function genConfig (name) { // name循环遍历中的builds的键名
   const opts = builds[name]
   const config = {
