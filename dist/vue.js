@@ -7,6 +7,7 @@
   /* 在模块文件内部，可以直接用exports，module.import时会自动对应成module.exports */
   /* 是模块文件并在node环境下运行？ 导出factory()返回值： */
 	typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  /* amd模块规范 */
 	typeof define === 'function' && define.amd ? define(factory) :
 	(global.Vue = factory());
 }(this, (function () { 'use strict';
