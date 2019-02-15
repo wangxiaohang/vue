@@ -46,7 +46,7 @@ const builds = {
     entry: resolve('web/entry-runtime.js'),
     dest: resolve('dist/vue.runtime.common.js'),
     format: 'cjs',
-    banner
+    banner /* banner定义了文件开头的注释，包括作者、版本号、Lisence等信息 */
   },
   // Runtime+compiler CommonJS build (CommonJS)
   'web-full-cjs': {
