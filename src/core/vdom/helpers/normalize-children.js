@@ -5,17 +5,25 @@ import { isFalse, isTrue, isDef, isUndef, isPrimitive } from 'shared/util'
 
 // The template compiler attempts to minimize the need for normalization by
 // statically analyzing the template at compile time.
+// 模板编译器试图 最小化 标准化需求
+// 通过在编译时静态分析模板
 //
 // For plain HTML markup, normalization can be completely skipped because the
 // generated render function is guaranteed to return Array<VNode>. There are
 // two cases where extra normalization is needed:
+// 对于HTML文本，标准化过程可以直接跳过，
+// 因为生成的render函数肯定会返回一个VNode类型的数组
+// 有两种情况还需要标准化过程：
 
 // 1. When the children contains components - because a functional component
 // may return an Array instead of a single root. In this case, just a simple
 // normalization is needed - if any child is an Array, we flatten the whole
 // thing with Array.prototype.concat. It is guaranteed to be only 1-level deep
 // because functional components already normalize their own children.
-export function simpleNormalizeChildren (children: any) {
+
+// children中包含数组，将children拍平（一维数组，不嵌套）
+// 只考虑一层深度，因为功能型组件已经normalize了他们的children
+export function simpleNormalizeChildren (children: any) { // 编译生成的render调用这里
   for (let i = 0; i < children.length; i++) {
     if (Array.isArray(children[i])) {
       return Array.prototype.concat.apply([], children)
@@ -28,11 +36,12 @@ export function simpleNormalizeChildren (children: any) {
 // e.g. <template>, <slot>, v-for, or when the children is provided by user
 // with hand-written render functions / JSX. In such cases a full normalization
 // is needed to cater to all possible types of children values.
-export function normalizeChildren (children: any): ?Array<VNode> {
+// 2. 当chidlren中包含必然生成嵌套Array的结构体
+export function normalizeChildren (children: any): ?Array<VNode> { // 手写的调用这里
   return isPrimitive(children)
-    ? [createTextVNode(children)]
+    ? [createTextVNode(children)] // 基本类型：返回一个 文本节点数组
     : Array.isArray(children)
-      ? normalizeArrayChildren(children)
+      ? normalizeArrayChildren(children) // 1.递归拍平 2.文本节点合并
       : undefined
 }
 
@@ -49,26 +58,28 @@ function normalizeArrayChildren (children: any, nestedIndex?: string): Array<VNo
     lastIndex = res.length - 1
     last = res[lastIndex]
     //  nested
-    if (Array.isArray(c) && c.length > 0) {
+    if (Array.isArray(c) && c.length > 0) { // 嵌套数组
       c = normalizeArrayChildren(c, `${nestedIndex || ''}_${i}`)
       // merge adjacent text nodes
+      // 如果上一个子节点的结尾和这个子节点的开头都是文本节点，则将这一个文本拼到上一个子节点文本的结尾
       if (isTextNode(c[0]) && isTextNode(last)) {
         res[lastIndex] = createTextVNode(last.text + (c[0]: any).text)
         c.shift()
       }
       res.push.apply(res, c)
-    } else if (isPrimitive(c)) {
-      if (isTextNode(last)) {
+    } else if (isPrimitive(c)) { // 文本
+      if (isTextNode(last)) { // 最后一个也是文本
         // merge adjacent text nodes
         // this is necessary for SSR hydration because text nodes are
         // essentially merged when rendered to HTML strings
+        // 合并进最后一个文本节点
         res[lastIndex] = createTextVNode(last.text + c)
       } else if (c !== '') {
         // convert primitive to vnode
         res.push(createTextVNode(c))
       }
-    } else {
-      if (isTextNode(c) && isTextNode(last)) {
+    } else { // 是正常vnode
+      if (isTextNode(c) && isTextNode(last)) { // 文本节点
         // merge adjacent text nodes
         res[lastIndex] = createTextVNode(last.text + c.text)
       } else {
