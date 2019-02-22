@@ -629,11 +629,13 @@ export function createPatchFunction (backend) {
   }
 
   return function patch (oldVnode, vnode, hydrating, removeOnly, parentElm, refElm) {
+    /* 删除逻辑 */
     if (isUndef(vnode)) {
       if (isDef(oldVnode)) invokeDestroyHook(oldVnode)
       return
     }
 
+    /* 映射钩子需要 */
     let isInitialPatch = false
     const insertedVnodeQueue = []
 
@@ -643,14 +645,15 @@ export function createPatchFunction (backend) {
       createElm(vnode, insertedVnodeQueue, parentElm, refElm)
     } else {
       const isRealElement = isDef(oldVnode.nodeType)
-      if (!isRealElement && sameVnode(oldVnode, vnode)) {
+      if (!isRealElement && sameVnode(oldVnode, vnode)) { // oldVnode是虚拟节点
         // patch existing root node
         patchVnode(oldVnode, vnode, insertedVnodeQueue, removeOnly)
-      } else {
+      } else { // oldVnode是DOM
         if (isRealElement) {
           // mounting to a real element
           // check if this is server-rendered content and if we can perform
           // a successful hydration.
+          // 服务器端渲染逻辑
           if (oldVnode.nodeType === 1 && oldVnode.hasAttribute(SSR_ATTR)) {
             oldVnode.removeAttribute(SSR_ATTR)
             hydrating = true
@@ -671,11 +674,12 @@ export function createPatchFunction (backend) {
           }
           // either not server-rendered, or hydration failed.
           // create an empty node and replace it
-          oldVnode = emptyNodeAt(oldVnode)
+          oldVnode = emptyNodeAt(oldVnode) // 将dom生成空VNode
         }
         // replacing existing element
         const oldElm = oldVnode.elm
         const parentElm = nodeOps.parentNode(oldElm)
+        /* vnode挂载到真正的dom上 */
         createElm(
           vnode,
           insertedVnodeQueue,

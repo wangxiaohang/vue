@@ -48,6 +48,7 @@ export function initLifecycle (vm: Component) {
 
 export function lifecycleMixin (Vue: Class<Component>) {
   Vue.prototype._update = function (vnode: VNode, hydrating?: boolean) {
+    // 变量：数据更新用
     const vm: Component = this
     if (vm._isMounted) {
       callHook(vm, 'beforeUpdate')
